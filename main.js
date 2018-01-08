@@ -58,6 +58,13 @@ function createWindow() {
     e.sender.send('async-to-render', 'return async msg')
   })
 
+
+  ipcMain.on('close-action', (e, arg) => {
+    console.log(e, arg, 'aaaaa');
+    mainWindow.close()
+    mainWindow = null
+  })
+
 }
 
 // This method will be called when Electron has finished

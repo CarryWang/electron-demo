@@ -1,19 +1,96 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
 
-    <script>
-      // You can also require other files to run in this process
-      require('./renderer.js')
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>桌面程序测试</title>
+</head>
+<style>
+  #test {
+    width: 100%;
+    height: 95vh;
+    border: 0;
+  }
+
+  .my_bar {
+    background-color: rgba(51, 153, 153, 0.575);
+    color: white;
+    font-family: '微软雅黑';
+    font-size: 12px;
+    padding: 8px 24px;
+    position: relative
+  }
+
+  #close_btn {
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: blueviolet;
+    color: white;
+    display: block;
+    font-style: normal;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+  }
+  body{
+    background-color: rgba(66, 197, 180, 0.863);
+    margin: 0;
+  }
+</style>
+
+<body>
+  <div class="my_bar" style="-webkit-app-region: drag">
+    桌面应用测试
+    <em id="close_btn">X</em>
+  </div>
+  <!-- <iframe id="test" src="http://10.0.5.161:18080/sdp_manage"></iframe> -->
+  <div class="container">
+      <h1>hhahaha</h1>
+  </div>
+  
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+  </script>
+  <script>
+    // const text = document.querySelector('#test')
+    // text.innerHTML = process;
+    // console.dir(process)
+    const electron = require('electron');
+    console.log(electron);
+    const { ipcRenderer } = electron;
+
+    // 设置监听
+    ipcRenderer.on('test-to-process', (e, meg) => {
+      console.log('message from Main Process: ', meg);  // Prints Main Process Message.
+    })
+
+    // 同步向主进程发送消息
+    // const mainReturnMsg = ipcRenderer.sendSync('sync-msg', 'sync send to mainJs')
+    // console.log(mainReturnMsg); // 返回主进程的returnValue
+
+
+    // 异步向主进程发送消息
+    ipcRenderer.send('async-msg', 'async-ping')
+    // 监听一个main接收async事件后返回的消息
+    ipcRenderer.on('async-to-render', (e, arg) => {
+      console.log(e, arg, 'this is main async return')
+    })
+
+    //关闭按钮事件
+    const close_btn = document.querySelector('#close_btn')
+    close_btn.addEventListener('click', () => {
+      alert('app will close, bitch!');
+      ipcRenderer.send('close-action','close')
+    })
+
+
+  </script>
+</body>
+
 </html>
